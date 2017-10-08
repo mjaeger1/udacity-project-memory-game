@@ -1,14 +1,37 @@
-/*
- * Create a list that holds all of your cards
- */
+// List that holds all cards (using Font Awesome icons, fontawesome.io)
+
+var cardList = [
+  'fa fa-car',
+  'fa fa-car',
+  'fa fa-bicycle',
+  'fa fa-bicycle',
+  'fa fa-ship',
+  'fa fa-ship',
+  'fa fa-subway',
+  'fa fa-subway',
+  'fa fa-truck',
+  'fa fa-truck',
+  'fa fa-rocket',
+  'fa fa-rocket',
+  'fa fa-ambulance',
+  'fa fa-ambulance',
+  'fa fa-motorcycle',
+  'fa fa-motorcycle'
+];
 
 
-/*
- * Display the cards on the page
- *   - shuffle the list of cards using the provided "shuffle" method below
- *   - loop through each card and create its HTML
- *   - add each card's HTML to the page
- */
+// Initial shuffle of cardList and creation of deck
+cardList = shuffle(cardList);
+createDeck(cardList);
+
+
+// cardList shuffle and creation of deck at every restart of the game
+document.getElementById('restart').addEventListener('click', function(){
+  cardList = shuffle(cardList);
+  createDeck(cardList);
+  }
+);
+
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
@@ -23,6 +46,23 @@ function shuffle(array) {
     }
 
     return array;
+}
+
+
+// function to create deck with 16 cards incl. click-event listeners
+function createDeck(array) {
+  let deck = document.getElementById('deck');
+  deck.innerHTML = '';
+  let tempElement;
+  array.forEach(function(element){
+    tempElement = deck.appendChild(document.createElement("li"));
+    tempElement.setAttribute("class","card");
+    tempElement.addEventListener('click', function(event){
+      console.log("card " + element + " clicked!");
+    });
+    tempElement = tempElement.appendChild(document.createElement("i"));
+    tempElement.setAttribute("class",element);
+  });
 }
 
 
