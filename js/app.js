@@ -1,6 +1,5 @@
-// List that holds all cards (using Font Awesome icons, fontawesome.io)
-
-var cardList = [
+// Array that holds all cards (using Font Awesome icons, fontawesome.io)
+let cardList = [
   'fa fa-car',
   'fa fa-car',
   'fa fa-bicycle',
@@ -19,16 +18,24 @@ var cardList = [
   'fa fa-motorcycle'
 ];
 
+// Array that holds all open cards
+let openCards = [];
+
+// Variable counting moves taken
+let moves = 0;
+const moveCounter = document.getElementById('moves');
+moveCounter.innerHTML = moves;
 
 // Initial shuffle of cardList and creation of deck
 cardList = shuffle(cardList);
 createDeck(cardList);
 
 
-// cardList shuffle and creation of deck at every restart of the game
+// CardList shuffle and creation of deck at every restart of the game
 document.getElementById('restart').addEventListener('click', function(){
   cardList = shuffle(cardList);
   createDeck(cardList);
+  moveCounter.innerHTML = 0;
   }
 );
 
@@ -49,30 +56,64 @@ function shuffle(array) {
 }
 
 
-// function to create deck with 16 cards incl. click-event listeners
+// Function to create deck with 16 cards incl. click-event listeners
 function createDeck(array) {
   let deck = document.getElementById('deck');
   deck.innerHTML = '';
   let tempElement;
+
   array.forEach(function(element){
     tempElement = deck.appendChild(document.createElement("li"));
     tempElement.setAttribute("class","card");
+
+    // Event listener
     tempElement.addEventListener('click', function(event){
-      console.log("card " + element + " clicked!");
+      moveCounter.innerHTML = ++moves;
+      displaySymbol(this);
     });
+
     tempElement = tempElement.appendChild(document.createElement("i"));
     tempElement.setAttribute("class",element);
   });
 }
 
+// Function to display cards
+function displaySymbol(card){
+  card.className = "card open show";
+  matchOrNoMatch(card);
+}
 
-/*
- * set up the event listener for a card. If a card is clicked:
- *  - display the card's symbol (put this functionality in another function that you call from this one)
- *  - add the card to a *list* of "open" cards (put this functionality in another function that you call from this one)
- *  - if the list already has another card, check to see if the two cards match
- *    + if the cards do match, lock the cards in the open position (put this functionality in another function that you call from this one)
- *    + if the cards do not match, remove the cards from the list and hide the card's symbol (put this functionality in another function that you call from this one)
- *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
- *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
- */
+// Function covering the core game logic, i.e. checks if the card just open results in a match or not
+function matchOrNoMatch(card){
+  let cardClassName = card.firstElementChild.className;
+  if (openCards.length > 0) {
+    if (openCards.indexOf(cardClassName) === -1) { // Not first card, not already in, not a match
+      if (openCards.length % 2 !== 0) {
+        window.setTimeout(hideSymbol,3000,cardClassName); // Hide current card
+        window.setTimeout(hideSymbol,3000,openCards.pop()); // Remove previous card from openCards, and hide it
+      } else {
+        addToOpenCards(cardClassName); // Add card always if opening the first of a pair of cards
+      }
+    } else { // Not first card, card already in => yay, it's a match !!!
+      addToOpenCards(cardClassName);
+    }
+  } else { // Add first card
+    addToOpenCards(cardClassName);
+  }
+}
+
+// Function to add cards to array of open cards and check whether game is completed
+function addToOpenCards(cardClassName){
+  openCards.push(cardClassName);
+  if (openCards.length === 16) {
+    window.setTimeout(window.alert,1000,"congrats - game completed after " + moves + " moves!");
+  }
+}
+
+// Function to hide cards again if not a match
+// Note: not the niciest implementation since it also changes the class of elements that already have the correct class
+function hideSymbol(cardClassName){
+  var cardsToHide = document.getElementsByClassName(cardClassName);
+  cardsToHide[0].parentElement.className = "card";
+  cardsToHide[1].parentElement.className = "card";
+}
