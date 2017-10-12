@@ -22,13 +22,14 @@ let cardList = [
 let openCards = []; // Array that holds all open cards
 let moveCounter; // will be assigned to DOM element "moves"
 let moves = 0; // Variable counting moves that have been taken
-
+let stars; // will be assinged to DOM elements with class names "fa fa-star"
 
 if (document.title === "Matching Game") {
 
-  // set moves to 0 at pageload
   moveCounter = document.getElementById('moves');
   moveCounter.innerHTML = moves;
+
+  stars = document.getElementsByClassName('fa fa-star');
 
   // Initial shuffle of cardList and creation of deck
   cardList = shuffle(cardList);
@@ -42,6 +43,10 @@ if (document.title === "Matching Game") {
     moveCounter.innerHTML = 0;
     }
   );
+}
+
+if (document.title === "Matching Game - Success Screen") {
+  // document.getElementById('performance').innerHTML = "With " + moves + " moves and x stars";
 }
 
 
@@ -74,6 +79,14 @@ function createDeck(array) {
     // Event listener
     tempElement.addEventListener('click', function(event){
       moveCounter.innerHTML = ++moves;
+      // change number of stars after certain amount of moves
+      if (moves === 20){
+        stars[2].setAttribute("class","fa fa-star-o");
+      } else if (moves === 30) {
+        stars[1].setAttribute("class","fa fa-star-o");
+      } else if (moves === 30) {
+        stars[1].setAttribute("class","fa fa-star-o");
+      }
       displaySymbol(this);
     });
 
@@ -96,9 +109,16 @@ function matchOrNoMatch(card){
     addToOpenCards(cardClassName);
     } else {
     if (openCards.indexOf(cardClassName) === -1) { // Not a match (either because just 1 card open or really no match)
-      if (openCards.length % 2 !== 0) { // really not match
+      if (openCards.length % 2 !== 0) { // really not a   match
         window.setTimeout(changeClass,3000,cardClassName,"card"); // Hide current card
         window.setTimeout(changeClass,3000,openCards.pop(),"card"); // Remove previous card from openCards, and hide it
+
+        // disables all mouse events (to ensure no additional card can be picked while 2 are open)
+        var allCards = document.getElementsByClassName("card");
+        for (var i = 0; i < allCards.length; i++) {
+          allCards[i].style.pointerEvents = "none";
+        }
+
       } else {
         addToOpenCards(cardClassName); // Add card always if opening the first of a pair of cards
       }
@@ -112,8 +132,8 @@ function matchOrNoMatch(card){
 // Function to add cards to array of open cards and check whether game is completed
 function addToOpenCards(cardClassName){
   openCards.push(cardClassName);
-  if (openCards.length === 16) {
-    window.location.href = "./html/congrats.html";
+  if (openCards.length === 1) {
+    window.setTimeout(function(){window.location.href = "./html/congrats.html";},3000);
   }
 }
 
@@ -122,4 +142,12 @@ function changeClass(currentClassName, newClassName){
   let cardsToChange = document.getElementsByClassName(currentClassName);
   cardsToChange[0].parentElement.className = newClassName;
   cardsToChange[1].parentElement.className = newClassName;
+
+  if (newClassName === "card") {
+    //enable mouse events again
+    var allCards = document.getElementsByClassName("card");
+    for (var i = 0; i < allCards.length; i++) {
+      allCards[i].style.pointerEvents = "auto";
+    }
+  }
 }
