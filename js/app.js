@@ -18,26 +18,31 @@ let cardList = [
   'fa fa-motorcycle'
 ];
 
-// Array that holds all open cards
-let openCards = [];
 
-// Variable counting moves taken
-let moves = 0;
-const moveCounter = document.getElementById('moves');
-moveCounter.innerHTML = moves;
-
-// Initial shuffle of cardList and creation of deck
-cardList = shuffle(cardList);
-createDeck(cardList);
+let openCards = []; // Array that holds all open cards
+let moveCounter; // will be assigned to DOM element "moves"
+let moves = 0; // Variable counting moves that have been taken
 
 
-// CardList shuffle and creation of deck at every restart of the game
-document.getElementById('restart').addEventListener('click', function(){
+if (document.title === "Matching Game") {
+
+  // set moves to 0 at pageload
+  moveCounter = document.getElementById('moves');
+  moveCounter.innerHTML = moves;
+
+  // Initial shuffle of cardList and creation of deck
   cardList = shuffle(cardList);
   createDeck(cardList);
-  moveCounter.innerHTML = 0;
-  }
-);
+
+
+  // CardList shuffle and creation of deck at every restart of the game
+  document.getElementById('restart').addEventListener('click', function(){
+    cardList = shuffle(cardList);
+    createDeck(cardList);
+    moveCounter.innerHTML = 0;
+    }
+  );
+}
 
 
 // Shuffle function from http://stackoverflow.com/a/2450976
@@ -86,19 +91,21 @@ function displaySymbol(card){
 // Function covering the core game logic, i.e. checks if the card just open results in a match or not
 function matchOrNoMatch(card){
   let cardClassName = card.firstElementChild.className;
-  if (openCards.length > 0) {
-    if (openCards.indexOf(cardClassName) === -1) { // Not first card, not already in, not a match
-      if (openCards.length % 2 !== 0) {
-        window.setTimeout(hideSymbol,3000,cardClassName); // Hide current card
-        window.setTimeout(hideSymbol,3000,openCards.pop()); // Remove previous card from openCards, and hide it
+
+  if (openCards.length === 0) { // first card
+    addToOpenCards(cardClassName);
+    } else {
+    if (openCards.indexOf(cardClassName) === -1) { // Not a match (either because just 1 card open or really no match)
+      if (openCards.length % 2 !== 0) { // really not match
+        window.setTimeout(changeClass,3000,cardClassName,"card"); // Hide current card
+        window.setTimeout(changeClass,3000,openCards.pop(),"card"); // Remove previous card from openCards, and hide it
       } else {
         addToOpenCards(cardClassName); // Add card always if opening the first of a pair of cards
       }
-    } else { // Not first card, card already in => yay, it's a match !!!
+    } else { // yay, it's a match !!!
       addToOpenCards(cardClassName);
+      changeClass(cardClassName,"card match");
     }
-  } else { // Add first card
-    addToOpenCards(cardClassName);
   }
 }
 
@@ -106,14 +113,13 @@ function matchOrNoMatch(card){
 function addToOpenCards(cardClassName){
   openCards.push(cardClassName);
   if (openCards.length === 16) {
-    window.setTimeout(window.alert,1000,"congrats - game completed after " + moves + " moves!");
+    window.location.href = "./html/congrats.html";
   }
 }
 
-// Function to hide cards again if not a match
-// Note: not the niciest implementation since it also changes the class of elements that already have the correct class
-function hideSymbol(cardClassName){
-  var cardsToHide = document.getElementsByClassName(cardClassName);
-  cardsToHide[0].parentElement.className = "card";
-  cardsToHide[1].parentElement.className = "card";
+// Function to change class of a pair of cards
+function changeClass(currentClassName, newClassName){
+  let cardsToChange = document.getElementsByClassName(currentClassName);
+  cardsToChange[0].parentElement.className = newClassName;
+  cardsToChange[1].parentElement.className = newClassName;
 }

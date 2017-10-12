@@ -79,7 +79,11 @@ h1 {
     cursor: default;
     background: #02ccba;
     font-size: 33px;
+    animation-name: match;
+    animation-duration: 0.1s;
+    animation-iteration-count: 10;
 }
+
 
 /*
  * Styles for the Score Panel
@@ -106,4 +110,59 @@ h1 {
 .score-panel .restart {
     float: right;
     cursor: pointer;
+}
+
+
+/*
+ * Styles for the Congrats Page
+ */
+
+.congrats {
+   background: #ffffff;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+.circle {
+  width: 75px;
+  height: 75px;
+  border: 1px solid grey;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #02ccba;
+}
+
+.success {
+  text-align: center;
+}
+
+.btn {
+  -webkit-border-radius: 28;
+  -moz-border-radius: 28;
+  border-radius: 28px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 15px;
+  background: #02ccba;
+  padding: 10px 20px 10px 20px;
+  text-decoration: none;
+  border: none;
+}
+
+.btn:hover {
+  background: #3cb0fd;
+  /*background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -o-linear-gradient(top, #3cb0fd, #3498db);*/
+  background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+  text-decoration: none;
+}
+
+a {
+  color: white;
+  text-decoration: none;
 }
