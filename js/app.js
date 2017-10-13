@@ -80,11 +80,11 @@ function createDeck(array) {
     tempElement.addEventListener('click', function(event){
       moveCounter.innerHTML = ++moves;
       // change number of stars after certain amount of moves
-      if (moves === 20){
+      if (moves === 30){
         stars[2].setAttribute("class","fa fa-star-o");
-      } else if (moves === 30) {
+      } else if (moves === 40) {
         stars[1].setAttribute("class","fa fa-star-o");
-      } else if (moves === 30) {
+      } else if (moves === 50) {
         stars[1].setAttribute("class","fa fa-star-o");
       }
       displaySymbol(this);
@@ -132,7 +132,7 @@ function matchOrNoMatch(card){
 // Function to add cards to array of open cards and check whether game is completed
 function addToOpenCards(cardClassName){
   openCards.push(cardClassName);
-  if (openCards.length === 1) {
+  if (openCards.length === 16) {
     window.setTimeout(function(){window.location.href = "./html/congrats.html";},3000);
   }
 }
