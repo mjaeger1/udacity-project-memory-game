@@ -20,33 +20,61 @@ let cardList = [
 
 
 let openCards = []; // Array that holds all open cards
-let moveCounter; // will be assigned to DOM element "moves"
+let moveCounter; // Will be assigned to DOM element "moves"
 let moves = 0; // Variable counting moves that have been taken
-let stars; // will be assinged to DOM elements with class names "fa fa-star"
+let starDom; // Will be assinged to DOM elements with class names "fa fa-star"
+let stars = 3; // Variable counting stars left
+let startTime; // Timer variable
 
-if (document.title === "Matching Game") {
 
+// Only executed at pageload of index.html
+function initGame() {
+
+  // Get moves DOM and set moves to 0
   moveCounter = document.getElementById('moves');
   moveCounter.innerHTML = moves;
 
-  stars = document.getElementsByClassName('fa fa-star');
+  // Get stars DOM
+  starDom = document.getElementsByClassName('fa fa-star');
+
+  // Start timer
+  startTime = new Date().getTime();
+  startTimer();
 
   // Initial shuffle of cardList and creation of deck
   cardList = shuffle(cardList);
   createDeck(cardList);
 
+  localStorage.clear();
 
-  // CardList shuffle and creation of deck at every restart of the game
+
+  // Game restart (new deck, timer/star reset, counter restart)
   document.getElementById('restart').addEventListener('click', function(){
     cardList = shuffle(cardList);
     createDeck(cardList);
+    openCards = [];
     moveCounter.innerHTML = 0;
+    stars = 3;
+    moves = 0;
+
+    var emptyStars = document.getElementsByClassName('fa fa-star-o');
+
+    for (var i = 0; i < emptyStars.length; i++) {
+      emptyStars[i].setAttribute("class","fa fa-star");
+    }
+
+    startTime = new Date().getTime();
+    startTimer();
     }
   );
 }
 
-if (document.title === "Matching Game - Success Screen") {
-  // document.getElementById('performance').innerHTML = "With " + moves + " moves and x stars";
+
+// Only executed on pageload of Sucess Screen
+// Reading and displaying results from localStorage
+function showResults() {
+  document.getElementById('performance').innerHTML = "With " + localStorage['moves'] +
+  " moves and " + localStorage['stars'] + " stars. Time: " + localStorage['time'];
 }
 
 
@@ -81,11 +109,14 @@ function createDeck(array) {
       moveCounter.innerHTML = ++moves;
       // change number of stars after certain amount of moves
       if (moves === 30){
-        stars[2].setAttribute("class","fa fa-star-o");
+        starDom[2].setAttribute("class","fa fa-star-o");
+        stars--;
       } else if (moves === 40) {
-        stars[1].setAttribute("class","fa fa-star-o");
+        starDom[1].setAttribute("class","fa fa-star-o");
+        stars--;
       } else if (moves === 50) {
-        stars[1].setAttribute("class","fa fa-star-o");
+        starDom[0].setAttribute("class","fa fa-star-o");
+        stars--;
       }
       displaySymbol(this);
     });
@@ -95,11 +126,13 @@ function createDeck(array) {
   });
 }
 
+
 // Function to display cards
 function displaySymbol(card){
   card.className = "card open show";
   matchOrNoMatch(card);
 }
+
 
 // Function covering the core game logic, i.e. checks if the card just open results in a match or not
 function matchOrNoMatch(card){
@@ -129,13 +162,18 @@ function matchOrNoMatch(card){
   }
 }
 
+
 // Function to add cards to array of open cards and check whether game is completed
 function addToOpenCards(cardClassName){
   openCards.push(cardClassName);
   if (openCards.length === 16) {
+    localStorage['moves'] = moves;
+    localStorage['stars'] = stars;
+    localStorage['time'] = document.getElementById('timer').innerHTML;
     window.setTimeout(function(){window.location.href = "./html/congrats.html";},3000);
   }
 }
+
 
 // Function to change class of a pair of cards
 function changeClass(currentClassName, newClassName){
@@ -150,4 +188,28 @@ function changeClass(currentClassName, newClassName){
       allCards[i].style.pointerEvents = "auto";
     }
   }
+}
+
+
+// Timer - based on:
+// https://www.w3schools.com/js/tryit.asp?filename=tryjs_timing_clock
+// https://www.w3schools.com/howto/howto_js_countdown.asp
+function startTimer() {
+    var now = new Date().getTime();
+    var diff = now - startTime;
+
+    var s = Math.floor((diff % (1000 * 60)) / 1000);
+    var m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    s = checkTime(s);
+    m = checkTime(m);
+
+    document.getElementById('timer').innerHTML = m + ":" + s;
+    if (openCards.length < 16) { // timer continues until all cards are open
+      setTimeout(startTimer, 500);
+    }
+}
+
+function checkTime(i) {
+    if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+    return i;
 }

@@ -117,6 +117,10 @@ h1 {
     cursor: pointer;
 }
 
+.score-panel .timer {
+    margin-left: 20px;
+}
+
 
 /*
  * Styles for the Congrats Page
@@ -152,6 +156,7 @@ h1 {
   font-size: 15px;
   background: #02ccba;
   padding: 10px 20px 10px 20px;
+  margin: 10px;
   text-decoration: none;
   border: none;
 }
@@ -163,10 +168,5 @@ h1 {
   background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
   background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
   background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
-  text-decoration: none;
-}
-
-a {
-  color: white;
   text-decoration: none;
 }
