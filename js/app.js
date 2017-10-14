@@ -179,10 +179,12 @@ function changeClass(currentClassName, newClassName){
   cardsToChange[1].parentElement.className = newClassName;
 
   if (newClassName === "card") {
-    //enable mouse events again
+    //enable mouse events for cards that are not open / matched yet
     var allCards = document.getElementsByClassName("card");
     for (var i = 0; i < allCards.length; i++) {
-      allCards[i].style.pointerEvents = "auto";
+      if (openCards.indexOf(allCards[i].firstElementChild.className) === -1) {
+        allCards[i].style.pointerEvents = "auto";
+      }
     }
   }
 }
