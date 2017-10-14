@@ -114,9 +114,6 @@ function createDeck(array) {
       } else if (moves === 40) {
         starDom[1].setAttribute("class","fa fa-star-o");
         stars--;
-      } else if (moves === 50) {
-        starDom[0].setAttribute("class","fa fa-star-o");
-        stars--;
       }
       displaySymbol(this);
     });
@@ -130,6 +127,7 @@ function createDeck(array) {
 // Function to display cards
 function displaySymbol(card){
   card.className = "card open show";
+  card.style.pointerEvents = "none"; // make it non-clickable
   matchOrNoMatch(card);
 }
 
@@ -137,7 +135,6 @@ function displaySymbol(card){
 // Function covering the core game logic, i.e. checks if the card just open results in a match or not
 function matchOrNoMatch(card){
   let cardClassName = card.firstElementChild.className;
-
   if (openCards.length === 0) { // first card
     addToOpenCards(cardClassName);
     } else {
