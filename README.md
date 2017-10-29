@@ -1,4 +1,4 @@
-# Memory Game Project
+# Udacity: Memory Game Project
 
 Memory Game on a 4x4 grid. This project has been completed as part of Udacity's Front-End Web Developer Nanodegree.
 
